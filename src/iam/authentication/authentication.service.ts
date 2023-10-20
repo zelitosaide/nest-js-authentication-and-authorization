@@ -55,7 +55,6 @@ export class AuthenticationService {
       throw new UnauthorizedException("Password does not match");
     }
     const accessToken = await this.jwtService.signAsync(
-      // 👈
       {
         sub: user.id,
         email: user.email,
