@@ -26,7 +26,7 @@ export class AuthenticationService {
     } catch (error) {
       const pgUniqueViolationErrorCode = "23505";
       if (error.code === pgUniqueViolationErrorCode) {
-        throw new ConflictException();
+        throw new ConflictException("User already exists");
       }
       throw error;
     }
