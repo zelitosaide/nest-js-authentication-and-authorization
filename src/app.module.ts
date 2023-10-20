@@ -4,9 +4,11 @@ import { AppService } from "./app.service";
 import { CoffeesModule } from "./coffees/coffees.module";
 import { UsersModule } from "./users/users.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { ConfigModule } from "@nestjs/config";
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     CoffeesModule,
     UsersModule,
     TypeOrmModule.forRoot({
