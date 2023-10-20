@@ -4,6 +4,7 @@ import { User } from "src/users/entities/user.entity";
 import { Repository } from "typeorm";
 import { HashingService } from "../hashing/hashing.service";
 import { SignUpDto } from "./dto/sign-up.dto";
+import { SignInDto } from "./dto/sign-in.dto";
 
 @Injectable()
 export class AuthenticationService {
@@ -25,5 +26,9 @@ export class AuthenticationService {
       }
       throw error;
     }
+  }
+
+  async signIn(signInDto: SignInDto) {
+
   }
 }
