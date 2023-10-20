@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Req,
 } from "@nestjs/common";
 import { CoffeesService } from "./coffees.service";
 import { CreateCoffeeDto } from "./dto/create-coffee.dto";
@@ -21,7 +22,8 @@ export class CoffeesController {
   }
 
   @Get()
-  findAll() {
+  findAll(@Req() request) {
+    console.log(request.user);
     return this.coffeesService.findAll();
   }
 
