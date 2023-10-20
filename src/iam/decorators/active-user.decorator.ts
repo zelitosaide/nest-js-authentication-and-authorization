@@ -1,12 +1,11 @@
 import { ExecutionContext, createParamDecorator } from "@nestjs/common";
 import { REQUEST_USER_KEY } from "../iam.constants";
-// import { ActiveUserData } from '../interfaces/active-user-data.interface';
+import { ActiveUserData } from "../interfaces/active-use-data";
 
 export const ActiveUser = createParamDecorator(
-  (field: string | undefined, ctx: ExecutionContext) => {
+  (field: keyof ActiveUserData | undefined, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
-    // const user: ActiveUserData | undefined = request[REQUEST_USER_KEY];
-    const user = request[REQUEST_USER_KEY];
+    const user: ActiveUserData | undefined = request[REQUEST_USER_KEY];
     return field ? user?.[field] : user;
   },
 );
