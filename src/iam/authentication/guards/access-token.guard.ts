@@ -3,6 +3,7 @@ import {
   ExecutionContext,
   Inject,
   Injectable,
+  UnauthorizedException,
 } from "@nestjs/common";
 import { ConfigType } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
@@ -18,9 +19,20 @@ export class AccessTokenGuard implements CanActivate {
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
   ) {}
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest();
+    const token = this.extractTokenFromHeader(request);
+    if (!token) {
+      throw new UnauthorizedException();
+    }
+    try {
+      const payload = await this.jwtService.verifyAsync(
+        token,
+        this.jwtConfiguration,
+      );
+    } catch (error) {
+      throw new UnauthorizedException();
+    }
     return true;
   }
 
