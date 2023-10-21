@@ -14,6 +14,7 @@ import { JwtService } from "@nestjs/jwt";
 import jwtConfig from "../config/jwt.config";
 import { ConfigType } from "@nestjs/config";
 import { ActiveUserData } from "../interfaces/active-use-data";
+import { RefreshTokenDto } from "./dto/refresh-token.dto";
 
 @Injectable()
 export class AuthenticationService {
@@ -66,6 +67,22 @@ export class AuthenticationService {
     //     expiresIn: this.jwtConfiguration.accessTokenTtl,
     //   },
     // );
+    // const [accessToken, refreshToken] = await Promise.all([
+    //   this.signToken<Partial<ActiveUserData>>(
+    //     user.id,
+    //     this.jwtConfiguration.accessTokenTtl,
+    //     { email: user.email },
+    //   ),
+    //   this.signToken(user.id, this.jwtConfiguration.refreshTokenTtl),
+    // ]);
+    // return {
+    //   accessToken,
+    //   refreshToken,
+    // };
+    return await this.generateTokens(user);
+  }
+
+  async generateTokens(user: User) {
     const [accessToken, refreshToken] = await Promise.all([
       this.signToken<Partial<ActiveUserData>>(
         user.id,
@@ -93,5 +110,23 @@ export class AuthenticationService {
         expiresIn,
       },
     );
+  }
+
+  async refreshTokens(refreshTokenDto: RefreshTokenDto) {
+    try {
+      const { sub } = await this.jwtService.verifyAsync<
+        Pick<ActiveUserData, "sub">
+      >(refreshTokenDto.refreshToken, {
+        secret: this.jwtConfiguration.secret,
+        audience: this.jwtConfiguration.audience,
+        issuer: this.jwtConfiguration.issuer,
+      });
+      const user = await this.usersRepository.findOneByOrFail({
+        id: sub,
+      });
+      return this.generateTokens(user);
+    } catch (error) {
+      throw new UnauthorizedException();
+    }
   }
 }
