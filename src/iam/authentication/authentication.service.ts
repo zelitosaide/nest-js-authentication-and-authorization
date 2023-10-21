@@ -135,6 +135,11 @@ export class AuthenticationService {
         user.id,
         refreshTokenId,
       );
+      if (isValid) {
+        await this.refreshTokenIdsStorage.invalidate(user.id);
+      } else {
+        throw new Error("Refresh token is invalid");
+      }
       return this.generateTokens(user);
     } catch (error) {
       throw new UnauthorizedException();
