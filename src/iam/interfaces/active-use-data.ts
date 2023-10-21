@@ -13,7 +13,7 @@ export interface ActiveUserData {
   email: string;
 
   /**
- * The subject's (user) role.
- */
+   * The subject's (user) role.
+   */
   role: Role;
 }
