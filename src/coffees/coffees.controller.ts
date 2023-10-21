@@ -17,13 +17,18 @@ import { ActiveUserData } from "src/iam/interfaces/active-use-data";
 // import { Role } from "src/users/enums/role.enum";
 import { Permission } from "src/iam/authorization/permission.type";
 import { Permissions } from "src/iam/authorization/decorators/permission.decorator";
+import { Policies } from "src/iam/authorization/decorators/policies.decorator";
+import { FrameworkContributorPolicy } from "src/iam/authorization/policies/framework-contributor.policy";
 
 @Controller("coffees")
 export class CoffeesController {
   constructor(private readonly coffeesService: CoffeesService) {}
 
   // @Roles(Role.Admin)
-  @Permissions(Permission.CreateCoffee)
+  // @Permissions(Permission.CreateCoffee)
+  @Policies(
+    new FrameworkContributorPolicy() /** new MinAgePolicy(18), new OnlyAdminPolicy() */,
+  )
   @Post()
   create(@Body() createCoffeeDto: CreateCoffeeDto) {
     return this.coffeesService.create(createCoffeeDto);
