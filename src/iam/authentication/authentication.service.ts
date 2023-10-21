@@ -66,17 +66,21 @@ export class AuthenticationService {
     //     expiresIn: this.jwtConfiguration.accessTokenTtl,
     //   },
     // );
-    const accessToken = await this.signToken<Partial<ActiveUserData>>(
-      user.id,
-      this.jwtConfiguration.accessTokenTtl,
-      { email: user.email },
-    );
+    const [accessToken, refreshToken] = await Promise.all([
+      this.signToken<Partial<ActiveUserData>>(
+        user.id,
+        this.jwtConfiguration.accessTokenTtl,
+        { email: user.email },
+      ),
+      this.signToken(user.id, this.jwtConfiguration.refreshTokenTtl),
+    ]);
     return {
       accessToken,
+      refreshToken,
     };
   }
 
-  async signToken<T>(userId: number, expiresIn: number, payload: T) {
+  async signToken<T>(userId: number, expiresIn: number, payload?: T) {
     return await this.jwtService.signAsync(
       {
         sub: userId,
