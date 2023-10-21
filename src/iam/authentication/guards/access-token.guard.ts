@@ -8,7 +8,7 @@ import {
 import { ConfigType } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { Request } from "express";
-import { Observable } from "rxjs";
+// import { Observable } from "rxjs";
 import jwtConfig from "src/iam/config/jwt.config";
 import { REQUEST_USER_KEY } from "src/iam/iam.constants";
 
