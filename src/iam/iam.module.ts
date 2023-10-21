@@ -14,6 +14,8 @@ import { AuthenticationGuard } from "./authentication/guards/authentication.guar
 import { RefreshTokenIdsStorage } from "./authentication/refresh-token-ids.storage";
 import { RolesGuard } from "./authorization/guards/roles.guard";
 import { PermissionsGuard } from "./authorization/guards/permissions.guard";
+import { PolicyHandlerStorage } from "./authorization/policies/policy-handlers.storage";
+import { FrameworkContributorPolicyHandler } from "./authorization/policies/framework-contributor.policy";
 
 @Module({
   imports: [
@@ -39,6 +41,8 @@ import { PermissionsGuard } from "./authorization/guards/permissions.guard";
     },
     AccessTokenGuard,
     RefreshTokenIdsStorage,
+    PolicyHandlerStorage,
+    FrameworkContributorPolicyHandler,
   ],
   controllers: [AuthenticationController],
 })
