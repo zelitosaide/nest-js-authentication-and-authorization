@@ -15,6 +15,8 @@ import jwtConfig from "../config/jwt.config";
 import { ConfigType } from "@nestjs/config";
 import { ActiveUserData } from "../interfaces/active-use-data";
 import { RefreshTokenDto } from "./dto/refresh-token.dto";
+import { RefreshTokenIdsStorage } from "./refresh-token-ids.storage";
+import { randomUUID } from "crypto";
 
 @Injectable()
 export class AuthenticationService {
@@ -24,6 +26,7 @@ export class AuthenticationService {
     private readonly jwtService: JwtService,
     @Inject(jwtConfig.KEY)
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
+    private readonly refreshTokenIdsStorage: RefreshTokenIdsStorage,
   ) {}
 
   async signUp(signUpDto: SignUpDto) {
@@ -83,14 +86,18 @@ export class AuthenticationService {
   }
 
   async generateTokens(user: User) {
+    const refreshTokenId = randomUUID();
     const [accessToken, refreshToken] = await Promise.all([
       this.signToken<Partial<ActiveUserData>>(
         user.id,
         this.jwtConfiguration.accessTokenTtl,
         { email: user.email },
       ),
-      this.signToken(user.id, this.jwtConfiguration.refreshTokenTtl),
+      this.signToken(user.id, this.jwtConfiguration.refreshTokenTtl, {
+        refreshTokenId,
+      }),
     ]);
+    await this.refreshTokenIdsStorage.insert(user.id, refreshTokenId);
     return {
       accessToken,
       refreshToken,
