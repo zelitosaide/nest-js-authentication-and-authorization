@@ -15,12 +15,15 @@ import { ActiveUser } from "src/iam/decorators/active-user.decorator";
 import { ActiveUserData } from "src/iam/interfaces/active-use-data";
 import { Roles } from "src/iam/authorization/decorators/role.decorator";
 import { Role } from "src/users/enums/role.enum";
+import { Permission } from "src/iam/authorization/permission.type";
+import { Permissions } from "src/iam/authorization/decorators/permission.decorator";
 
 @Controller("coffees")
 export class CoffeesController {
   constructor(private readonly coffeesService: CoffeesService) {}
 
-  @Roles(Role.Admin)
+  // @Roles(Role.Admin)
+  @Permissions(Permission.CreateCoffee)
   @Post()
   create(@Body() createCoffeeDto: CreateCoffeeDto) {
     return this.coffeesService.create(createCoffeeDto);
@@ -39,13 +42,13 @@ export class CoffeesController {
     return this.coffeesService.findOne(+id);
   }
 
-  @Roles(Role.Admin)
+  // @Roles(Role.Admin)
   @Patch(":id")
   update(@Param("id") id: string, @Body() updateCoffeeDto: UpdateCoffeeDto) {
     return this.coffeesService.update(+id, updateCoffeeDto);
   }
 
-  @Roles(Role.Admin)
+  // @Roles(Role.Admin)
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.coffeesService.remove(+id);
